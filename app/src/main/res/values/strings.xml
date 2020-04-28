@@ -1,3 +1,14 @@
 <resources>
-    <string name="app_name">MFF Home Delivery</string>
+    <string name="app_name">LoginScreen</string>
+    <string name="hey_there">Hey There!!!</string>
+    <string name="login">Login</string>
+    <string name="welcome_to_our_community">Welcome to our community!</string>
+    <string name="not_part_of_a_community">Not part of a community?</string>
+    <string name="register">Register</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="name">Name</string>
+    <string name="phone">Phone</string>
+    <string name="signUpGreeting">Sign Up to join our Community!</string>
+    <string name="loginGreeting">Login to be a part of our community</string>
 </resources>

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".RegisterActivity"
+    android:background="@drawable/ui">
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/signUpBackButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:src="@drawable/ic_arrow_back_black_24dp"
+        app:backgroundTint="#00227b"
+        app:elevation="5dp" />
+
+    <TextView
+        android:id="@+id/signUpGreeting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/signUpBackButton"
+        android:layout_centerHorizontal="true"
+        android:text="@string/signUpGreeting"
+        android:textAlignment="center"
+        android:textColor="#ffffff"
+        android:textSize="36sp" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/nameCardView"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/signUpGreeting"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginRight="25dp"
+        app:cardBackgroundColor="#e0e0e0"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp">
+
+        <EditText
+            android:id="@+id/signName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="@string/name"
+            android:imeOptions="actionNext"
+            android:importantForAutofill="no"
+            android:inputType="textPersonName"
+            android:maxLines="1"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:textSize="15sp"
+            tools:ignore="TextFields" />
+    </androidx.cardview.widget.CardView>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/emailCardView"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/nameCardView"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="25dp"
+        app:cardBackgroundColor="#e0e0e0"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp">
+
+        <EditText
+            android:id="@+id/signEmail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="@string/email"
+            android:imeOptions="actionNext"
+            android:importantForAutofill="no"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:textSize="15sp"
+            tools:ignore="TextFields" />
+    </androidx.cardview.widget.CardView>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/passwordCardView"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/emailCardView"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="25dp"
+        app:cardBackgroundColor="#e0e0e0"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp">
+
+        <EditText
+            android:id="@+id/signPassword"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="@string/password"
+            android:imeOptions="actionNext"
+            android:importantForAutofill="no"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:textSize="15sp"
+            tools:ignore="TextFields" />
+    </androidx.cardview.widget.CardView>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/phoneCardView"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@id/passwordCardView"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="25dp"
+        app:cardBackgroundColor="#e0e0e0"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp">
+
+        <EditText
+            android:id="@+id/signPhone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@null"
+            android:gravity="center_vertical"
+            android:hint="@string/phone"
+            android:imeOptions="actionDone"
+            android:importantForAutofill="no"
+            android:inputType="number"
+            android:maxLines="1"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:textSize="15sp"
+            tools:ignore="TextFields" />
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/login_button_card_view"
+        android:layout_width="130dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/phoneCardView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="10dp"
+        app:cardBackgroundColor="@color/colorPrimary"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="0dp">
+
+        <TextView
+            android:id="@+id/signRegister"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:text="@string/register"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>
