@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LoginScreen</string>
+    <string name="app_name">Madhu\'s Fast Food</string>
     <string name="hey_there">Hey There!!!</string>
     <string name="login">Login</string>
     <string name="welcome_to_our_community">Welcome to our community!</string>
@@ -11,4 +11,17 @@
     <string name="phone">Phone</string>
     <string name="signUpGreeting">Sign Up to join our Community!</string>
     <string name="loginGreeting">Login to be a part of our community</string>
+    <string name="title_activity_home">Home</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+
+    <string name="home_second">Home Second</string>
 </resources>
