@@ -21,6 +21,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import Model.User;
+
 public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     DatabaseReference users;

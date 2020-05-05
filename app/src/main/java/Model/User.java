@@ -1,4 +1,4 @@
-package com.example.mffhomedelivery;
+package Model;
 
 public class User {
     private String name, email, password, phone;

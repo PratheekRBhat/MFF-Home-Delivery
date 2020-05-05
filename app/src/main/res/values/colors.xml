@@ -6,4 +6,6 @@
 
     <color name="overlayBackground">#7f333639</color>
     <color name="overlayActionBar">#0e0d0e</color>
+
+    <color name="overlay_color">#55333639</color>
 </resources>
