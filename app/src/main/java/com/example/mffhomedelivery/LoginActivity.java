@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,7 +50,7 @@ public class LoginActivity extends AppCompatActivity {
         emailET = findViewById(R.id.email);
         passwordET = findViewById(R.id.password);
 
-        TextView submit = findViewById(R.id.loginButton);
+        TextView submit = findViewById(R.id.login);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,7 +84,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser firebaseUser) {
         if (firebaseUser != null){
-            Intent loginIntent = new Intent(LoginActivity.this, MainActivity.class);
+            Intent loginIntent = new Intent(LoginActivity.this, Home.class);
             startActivity(loginIntent);
         }
     }
