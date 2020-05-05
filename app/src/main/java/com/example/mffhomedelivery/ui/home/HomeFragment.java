@@ -12,11 +12,13 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.asksira.loopingviewpager.LoopingViewPager;
+import com.example.mffhomedelivery.Adapter.BestDealsAdapter;
+import com.example.mffhomedelivery.Adapter.PopularCategoriesAdapter;
 import com.example.mffhomedelivery.R;
 
 import java.util.List;
 
-import Adapter.PopularCategoriesAdapter;
 import Model.PopularCategories;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,6 +28,9 @@ public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
     private Unbinder unbinder;
+    @BindView(R.id.viewpager)
+    LoopingViewPager viewPager;
+
     LayoutAnimationController layoutAnimationController;
 
     @BindView(R.id.recycler_popular_categories)
@@ -37,12 +42,20 @@ public class HomeFragment extends Fragment {
                 ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         unbinder = ButterKnife.bind(this, root);
-        init();
-        homeViewModel.getPopularList().observe(getViewLifecycleOwner(), popularCategories->{
 
-            //creating adapter
-            PopularCategoriesAdapter adapter = new PopularCategoriesAdapter(getContext(), (List<PopularCategories>) popularCategories);
-            popularCategoriesRV.setAdapter(adapter);
+        //Method to initialise the recycler view.
+        init();
+
+        homeViewModel.getPopularList().observe(getViewLifecycleOwner(), popularCategories->{
+            //creating Popular Categories RecyclerView adapter.
+            PopularCategoriesAdapter popularCategoriesAdapter = new PopularCategoriesAdapter(getContext(), (List<PopularCategories>) popularCategories);
+            popularCategoriesRV.setAdapter(popularCategoriesAdapter);
+        });
+
+        homeViewModel.getBestDealList().observe(getViewLifecycleOwner(),bestDeals -> {
+            //creating Best Deals LoopingViewPager adapter.
+            BestDealsAdapter bestDealsAdapter = new BestDealsAdapter(getContext(), bestDeals, true);
+            viewPager.setAdapter(bestDealsAdapter);
         });
         return root;
     }
@@ -50,5 +63,17 @@ public class HomeFragment extends Fragment {
     private void init() {
         popularCategoriesRV.setHasFixedSize(true);
         popularCategoriesRV.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
+    }
+
+    @Override
+    public void onPause() {
+        viewPager.pauseAutoScroll();
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        viewPager.resumeAutoScroll();
     }
 }

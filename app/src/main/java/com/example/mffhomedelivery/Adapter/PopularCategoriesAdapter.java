@@ -1,4 +1,4 @@
-package Adapter;
+package com.example.mffhomedelivery.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
