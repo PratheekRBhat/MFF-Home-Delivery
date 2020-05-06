@@ -11,8 +11,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.mffhomedelivery.Callback.RecyclerClickListener;
 import com.example.mffhomedelivery.Common.Common;
+import com.example.mffhomedelivery.EventBus.CategoryClick;
 import com.example.mffhomedelivery.R;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -40,6 +44,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Glide.with(context).load(categoryList.get(position).getImage()).into(holder.categoryIV);
         holder.categoryTV.setText(new StringBuilder(categoryList.get(position).getName()));
+
+        //Send notification to the Home activity.
+        holder.setRecyclerClickListener((view, position1) -> {
+            Common.categorySelected = categoryList.get(position1);
+            EventBus.getDefault().postSticky(new CategoryClick(true, categoryList.get(position1)));
+        });
     }
 
     @Override
@@ -47,15 +57,28 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         return categoryList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         Unbinder unbinder;
         @BindView(R.id.img_category)
         ImageView categoryIV;
         @BindView(R.id.txt_category)
         TextView categoryTV;
+
+        RecyclerClickListener recyclerClickListener;
+
+        public void setRecyclerClickListener(RecyclerClickListener recyclerClickListener) {
+            this.recyclerClickListener = recyclerClickListener;
+        }
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             unbinder = ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            recyclerClickListener.onItemClickListener(view, getAdapterPosition());
         }
     }
 

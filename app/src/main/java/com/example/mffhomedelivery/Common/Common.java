@@ -1,5 +1,6 @@
 package com.example.mffhomedelivery.Common;
 
+import Model.Category;
 import Model.User;
 
 public class Common {
@@ -12,4 +13,5 @@ public class Common {
     public static final int FULL_WIDTH_COLUMN = 1;
 
     public static User currentUser;
+    public static Category categorySelected;
 }

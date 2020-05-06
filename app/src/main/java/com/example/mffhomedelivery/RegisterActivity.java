@@ -33,7 +33,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        //Initialising Firebase Database and Authentication.
+        //Initialising Firebase com.example.mffhomedelivery.Database and Authentication.
         mAuth = FirebaseAuth.getInstance();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         users = database.getReference("Users");
