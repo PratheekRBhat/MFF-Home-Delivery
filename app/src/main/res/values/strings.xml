@@ -33,5 +33,7 @@
     <string name="food_name">Name of the food</string>
     <string name="food_price">Rs. 100</string>
     <string name="desc">Description</string>
+    <string name="your_name">Enter your name</string>
+    <string name="your_address">Enter your address</string>
 
 </resources>

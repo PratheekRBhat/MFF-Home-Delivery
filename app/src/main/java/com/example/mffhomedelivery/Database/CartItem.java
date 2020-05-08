@@ -1,13 +1,12 @@
 package com.example.mffhomedelivery.Database;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.PrimaryKey;
 
-@Entity(tableName = "Cart")
+@Entity(tableName = "Cart", primaryKeys = {"uid", "foodID"})
 public class CartItem {
-    @PrimaryKey
     @NonNull
     @ColumnInfo(name = "foodID")
     private String foodID;
@@ -27,6 +26,7 @@ public class CartItem {
     @ColumnInfo(name = "userPhone")
     private String userPhone;
 
+    @NonNull
     @ColumnInfo(name = "uid")
     private String uid;
 
@@ -79,11 +79,22 @@ public class CartItem {
         this.userPhone = userPhone;
     }
 
+    @NonNull
     public String getUid() {
         return uid;
     }
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == this)
+            return true;
+        if (! (obj instanceof CartItem))
+            return false;
+        CartItem cartItem = (CartItem)obj;
+        return cartItem.getFoodID().equals(this.foodID);
     }
 }

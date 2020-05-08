@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +15,13 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.andremion.counterfab.CounterFab;
+import com.example.mffhomedelivery.Common.Common;
+import com.example.mffhomedelivery.Database.CartDataSource;
+import com.example.mffhomedelivery.Database.CartDatabase;
+import com.example.mffhomedelivery.Database.LocalCartDataSource;
 import com.example.mffhomedelivery.EventBus.CategoryClick;
+import com.example.mffhomedelivery.EventBus.CounterCartEvent;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
@@ -23,16 +30,39 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+
 public class Home extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private AppBarConfiguration mAppBarConfiguration;
     private DrawerLayout drawerLayout;
     private NavController navController;
 
+    @BindView(R.id.fab)
+    CounterFab counterFab;
+
+    private CartDataSource cartDataSource;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        countCartItem();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        ButterKnife.bind(this);
+
+        cartDataSource = new LocalCartDataSource(CartDatabase.getInstance(this).CartDao());
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -56,6 +86,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         NavigationUI.setupWithNavController(navigationView, navController);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.bringToFront();
+
+        countCartItem();
     }
 
     @Override
@@ -109,5 +141,34 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             navController.navigate(R.id.nav_foodList);
 //            Toast.makeText(this, "Click to "+event.getCategory().getName(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onCartCounter(CounterCartEvent event) {
+        if (event.isSuccess()) {
+            countCartItem();
+        }
+    }
+
+    private void countCartItem() {
+        cartDataSource.countItemsInCart(Common.currentUser.getUid())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<Integer>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onSuccess(Integer integer) {
+                        counterFab.setCount(integer);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(Home.this, "[COUNT CART]" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
