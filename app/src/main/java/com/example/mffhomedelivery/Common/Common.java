@@ -1,5 +1,12 @@
 package com.example.mffhomedelivery.Common;
 
+import android.graphics.Typeface;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.StyleSpan;
+import android.widget.TextView;
+
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
@@ -27,5 +34,16 @@ public class Common {
         }
         else
             return "0.00";
+    }
+
+    //To set the header of the navigation bar.
+    public static void setSpanString(String s, String name, TextView txt_user) {
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append(s);
+        SpannableString spannableString = new SpannableString(name);
+        StyleSpan boldspan = new StyleSpan(Typeface.BOLD);
+        spannableString.setSpan(boldspan, 0, name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        builder.append(spannableString);
+        txt_user.setText(builder, TextView.BufferType.SPANNABLE);
     }
 }

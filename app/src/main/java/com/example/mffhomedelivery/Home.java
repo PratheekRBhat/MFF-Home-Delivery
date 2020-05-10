@@ -1,11 +1,15 @@
 package com.example.mffhomedelivery;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -24,6 +28,7 @@ import com.example.mffhomedelivery.EventBus.CounterCartEvent;
 import com.example.mffhomedelivery.EventBus.HideFABCart;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -83,6 +88,11 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.bringToFront();
 
+        //To set the header of the navigation bar.
+        View headerView = navigationView.getHeaderView(0);
+        TextView txt_user = headerView.findViewById(R.id.txt_user);
+        Common.setSpanString("Hey, ",  Common.currentUser.getName(), txt_user);
+
         countCartItem();
     }
 
@@ -115,8 +125,30 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             case R.id.nav_cart:
                 navController.navigate(R.id.nav_cart);
                 break;
+            case R.id.nav_sign_out:
+                signOut();
+                break;
         }
         return true;
+    }
+
+    private void signOut() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Sign Out")
+                .setMessage("Confirm sign out?")
+                .setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss())
+                .setPositiveButton("Confirm", (dialogInterface, i) -> {
+                    Common.categorySelected = null;
+                    Common.currentUser = null;
+                    FirebaseAuth.getInstance().signOut();
+
+                    Intent signOutIntent = new Intent(Home.this, MainActivity.class);
+                    signOutIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(signOutIntent);
+                    finish();
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Override
