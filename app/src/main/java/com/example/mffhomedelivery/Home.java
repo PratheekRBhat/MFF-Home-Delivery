@@ -3,7 +3,6 @@ package com.example.mffhomedelivery;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,9 +21,9 @@ import com.example.mffhomedelivery.Database.CartDatabase;
 import com.example.mffhomedelivery.Database.LocalCartDataSource;
 import com.example.mffhomedelivery.EventBus.CategoryClick;
 import com.example.mffhomedelivery.EventBus.CounterCartEvent;
+import com.example.mffhomedelivery.EventBus.HideFABCart;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -66,19 +65,16 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
+        fab.setOnClickListener(view -> {
+            countCartItem();
+            navController.navigate(R.id.nav_cart);
         });
         drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_menu, R.id.nav_foodList)
+                R.id.nav_home, R.id.nav_menu, R.id.nav_foodList, R.id.nav_cart)
                 .setDrawerLayout(drawerLayout)
                 .build();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -115,6 +111,9 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 break;
             case R.id.nav_menu:
                 navController.navigate(R.id.nav_menu);
+                break;
+            case R.id.nav_cart:
+                navController.navigate(R.id.nav_cart);
                 break;
         }
         return true;
@@ -170,5 +169,16 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                         Toast.makeText(Home.this, "[COUNT CART]" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onHideFABEvent(HideFABCart event)
+    {
+        if(event.isHidden())
+        {
+            counterFab.hide();
+        }
+        else
+            counterFab.show();
     }
 }

@@ -22,7 +22,7 @@ public interface CartDao {
     Single<Integer> countItemsInCart(String uid);
 
     @Query("SELECT SUM(foodPrice*foodQuantity) FROM Cart WHERE uid=:uid")
-    Single<Long> sumPriceInCart(String uid);
+    Single<Double> sumPriceInCart(String uid);
 
     @Query("SELECT * FROM Cart WHERE foodID=:foodID AND uid=:uid")
     Single<CartItem> getItemInCart(String foodID, String uid);

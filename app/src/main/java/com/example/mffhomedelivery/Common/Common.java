@@ -1,5 +1,8 @@
 package com.example.mffhomedelivery.Common;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 import Model.Category;
 import Model.User;
 
@@ -14,4 +17,15 @@ public class Common {
 
     public static User currentUser;
     public static Category categorySelected;
+
+    public static String formatPrice(Double price) {
+        if (price != 0){
+            DecimalFormat df = new DecimalFormat("#,##0.00");
+            df.setRoundingMode(RoundingMode.UP);
+            String finalPrice  = new StringBuilder(df.format(price)).toString();
+            return finalPrice;//.replace(".", ",");
+        }
+        else
+            return "0.00";
+    }
 }
