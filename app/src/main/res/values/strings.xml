@@ -38,5 +38,6 @@
     <string name="empty_cart">EMPTY CART</string>
     <string name="total">Total: 0,0</string>
     <string name="place_order">Place Order</string>
+    <string name="action_clear_cart">Clear Cart</string>
 
 </resources>
