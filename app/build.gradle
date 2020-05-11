@@ -89,4 +89,10 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     implementation 'io.reactivex.rxjava3:rxjava:3.0.0'
     implementation 'com.github.d-max:spots-dialog:1.1@aar'
+
+    //To get runtime permission
+    implementation 'com.karumi:dexter:6.1.0'
+
+    //For google location services.
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
 }

@@ -2,7 +2,9 @@ package com.example.mffhomedelivery.ui.cart;
 
 import android.app.AlertDialog;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Looper;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,6 +37,11 @@ import com.example.mffhomedelivery.EventBus.CounterCartEvent;
 import com.example.mffhomedelivery.EventBus.HideFABCart;
 import com.example.mffhomedelivery.EventBus.UpdateItemInCart;
 import com.example.mffhomedelivery.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -58,6 +65,11 @@ public class CartFragment extends Fragment {
     private CartDataSource cartDataSource;
     private CartAdapter adapter;
 
+    LocationRequest locationRequest;
+    LocationCallback locationCallback;
+    FusedLocationProviderClient fusedLocationProviderClient;
+    Location currentLocation;
+
     @BindView(R.id.recycler_cart)
     RecyclerView cartRV;
     @BindView(R.id.txt_total_price)
@@ -74,6 +86,9 @@ public class CartFragment extends Fragment {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_place_order, null);
 
         EditText addressET = view.findViewById(R.id.edt_address);
+        EditText commentET = view.findViewById(R.id.edt_comment);
+
+        TextView addressDetailsTV = view.findViewById(R.id.txt_address_detail);
 
         RadioButton homeAddressRB = view.findViewById(R.id.radio_home_address);
         RadioButton currentAddressRB = view.findViewById(R.id.radio_current_address);
@@ -85,11 +100,25 @@ public class CartFragment extends Fragment {
         homeAddressRB.setOnCheckedChangeListener((compoundButton, b) -> {
             if(b) {
                 addressET.setText(Common.currentUser.getAddress());
+                addressDetailsTV.setVisibility(View.GONE);
             }
         });
         currentAddressRB.setOnCheckedChangeListener((compoundButton, b) -> {
             if(b) {
-                Toast.makeText(getContext(), "Use user location services", Toast.LENGTH_SHORT).show();
+                fusedLocationProviderClient.getLastLocation()
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(getContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                            addressDetailsTV.setVisibility(View.GONE);
+                        })
+                        .addOnCompleteListener(task -> {
+                            String coordinates = new StringBuilder()
+                                    .append(task.getResult().getLatitude())
+                                    .append("/")
+                                    .append(task.getResult().getLongitude()).toString();
+                            addressET.setText(coordinates);
+                            addressDetailsTV.setText(R.string.need_billing_address);
+                            addressDetailsTV.setVisibility(View.VISIBLE);
+                        });
             }
         });
 
@@ -125,8 +154,35 @@ public class CartFragment extends Fragment {
             }
         });
         initViews();
+        initLocation();
 
         return root;
+    }
+
+    private void initLocation() {
+        buildLocationRequest();
+        buildLocationCallback();
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+    }
+
+    private void buildLocationCallback() {
+        locationCallback = new LocationCallback(){
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                super.onLocationResult(locationResult);
+                currentLocation = locationResult.getLastLocation();
+            }
+        };
+
+    }
+
+    private void buildLocationRequest() {
+        locationRequest = new LocationRequest();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(5000);
+        locationRequest.setFastestInterval(3000);
+        locationRequest.setSmallestDisplacement(10f);
     }
 
     private void initViews() {
@@ -253,7 +309,16 @@ public class CartFragment extends Fragment {
         EventBus.getDefault().postSticky(new HideFABCart(false));
         if (EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().unregister(this);
+        if (fusedLocationProviderClient != null)
+            fusedLocationProviderClient.removeLocationUpdates(locationCallback);
         super.onStop();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (fusedLocationProviderClient != null)
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
