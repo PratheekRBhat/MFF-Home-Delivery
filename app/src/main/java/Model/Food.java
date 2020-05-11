@@ -5,8 +5,6 @@ import java.util.List;
 public class Food {
     private String name, image, id, description;
     private Long price;
-    private List<AddOn> addon;
-    private List<SizeModel> size;
 
     //for cart
 
@@ -56,35 +54,4 @@ public class Food {
         this.price = price;
     }
 
-    public List<AddOn> getAddon() {
-        return addon;
-    }
-
-    public void setAddon(List<AddOn> addon) {
-        this.addon = addon;
-    }
-
-    public List<SizeModel> getSize() {
-        return size;
-    }
-
-    public void setSize(List<SizeModel> size) {
-        this.size = size;
-    }
-
-    public List<AddOn> getUserSelectedAddon() {
-        return userSelectedAddon;
-    }
-
-    public void setUserSelectedAddon(List<AddOn> userSelectedAddon) {
-        this.userSelectedAddon = userSelectedAddon;
-    }
-
-    public SizeModel getUserSelectedSize() {
-        return userSelectedSize;
-    }
-
-    public void setUserSelectedSize(SizeModel userSelectedSize) {
-        this.userSelectedSize = userSelectedSize;
-    }
 }

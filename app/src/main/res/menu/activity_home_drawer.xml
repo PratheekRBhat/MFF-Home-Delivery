@@ -3,14 +3,14 @@
 xmlns:tools="http://schemas.android.com/tools"
 tools:showIn="navigation_view">
 
-    <group android:id="@+id/group1">
+    <group android:id="@+id/home_group">
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home_black_24dp"
             android:title="@string/menu_home" />
     </group>
 
-    <group android:id="@+id/group2"
+    <group android:id="@+id/category_group"
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_menu"
@@ -18,7 +18,7 @@ tools:showIn="navigation_view">
             android:title="@string/menu_menu" />
     </group>
 
-    <group android:id="@+id/group3"
+    <group android:id="@+id/cart_group"
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_cart"
@@ -26,7 +26,7 @@ tools:showIn="navigation_view">
             android:title="@string/menu_cart" />
     </group>
 
-    <group android:id="@+id/group4"
+    <group android:id="@+id/sign_out_group"
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_sign_out"
@@ -34,7 +34,7 @@ tools:showIn="navigation_view">
             android:title="@string/menu_sign_out" />
     </group>
 
-    <group android:id="@+id/group5"
+    <group android:id="@+id/view_orders_group"
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_view_orders"

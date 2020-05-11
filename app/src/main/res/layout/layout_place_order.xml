@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:background="@android:color/white">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+        <EditText
+            android:id="@+id/edt_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/brandon_medium"
+            android:hint="@string/your_address"
+            android:background="@android:color/white"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:text="@string/delivery_method"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:fontFamily="@font/brandon_medium"
+        android:textStyle="bold"
+        android:textColor="@color/dialog_header_color"/>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/radio_home_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/home_address"
+            android:textSize="14sp"
+            android:textStyle="italic"
+            android:textColor="@color/dialog_text_color"/>
+
+        <RadioButton
+            android:id="@+id/radio_current_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/current_address"
+            android:textSize="14sp"
+            android:textStyle="italic"
+            android:textColor="@color/dialog_text_color"/>
+    </RadioGroup>
+</LinearLayout>

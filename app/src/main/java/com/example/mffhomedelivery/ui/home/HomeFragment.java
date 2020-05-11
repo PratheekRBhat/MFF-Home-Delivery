@@ -1,5 +1,6 @@
 package com.example.mffhomedelivery.ui.home;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,6 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.asksira.loopingviewpager.LoopingViewPager;
 import com.example.mffhomedelivery.Adapter.BestDealsAdapter;
 import com.example.mffhomedelivery.Adapter.PopularCategoriesAdapter;
 import com.example.mffhomedelivery.R;
@@ -24,13 +24,15 @@ import Model.PopularCategories;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import dmax.dialog.SpotsDialog;
 
 public class HomeFragment extends Fragment {
 
     private HomeViewModel homeViewModel;
     private Unbinder unbinder;
-    @BindView(R.id.viewpager)
-    LoopingViewPager viewPager;
+    @BindView(R.id.recycler_best_deals)
+    RecyclerView bestDealsRV;
+    AlertDialog alertDialog;
 
     LayoutAnimationController layoutAnimationController;
 
@@ -45,9 +47,10 @@ public class HomeFragment extends Fragment {
         unbinder = ButterKnife.bind(this, root);
 
         //Method to initialise the recycler view.
-        init();
+        initViews();
 
         homeViewModel.getPopularList().observe(getViewLifecycleOwner(), popularCategories->{
+            alertDialog.dismiss();
             //creating Popular Categories RecyclerView adapter.
             PopularCategoriesAdapter popularCategoriesAdapter = new PopularCategoriesAdapter(getContext(), (List<PopularCategories>) popularCategories);
             popularCategoriesRV.setAdapter(popularCategoriesAdapter);
@@ -55,28 +58,23 @@ public class HomeFragment extends Fragment {
         });
 
         homeViewModel.getBestDealList().observe(getViewLifecycleOwner(),bestDeals -> {
-            //creating Best Deals LoopingViewPager adapter.
-            BestDealsAdapter bestDealsAdapter = new BestDealsAdapter(getContext(), bestDeals, true);
-            viewPager.setAdapter(bestDealsAdapter);
+            //creating Best Deals RecyclerView adapter.
+            BestDealsAdapter bestDealsAdapter = new BestDealsAdapter(getContext(), bestDeals);
+            bestDealsRV.setAdapter(bestDealsAdapter);
+            bestDealsRV.setLayoutAnimation(layoutAnimationController);
         });
         return root;
     }
 
-    private void init() {
+    private void initViews() {
+        alertDialog = new SpotsDialog.Builder().setContext(getContext()).setCancelable(false).build();
+        alertDialog.show();
+
         layoutAnimationController = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_item_from_left);
         popularCategoriesRV.setHasFixedSize(true);
         popularCategoriesRV.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
-    }
 
-    @Override
-    public void onPause() {
-        viewPager.pauseAutoScroll();
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        viewPager.resumeAutoScroll();
+        bestDealsRV.setHasFixedSize(true);
+        bestDealsRV.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 }

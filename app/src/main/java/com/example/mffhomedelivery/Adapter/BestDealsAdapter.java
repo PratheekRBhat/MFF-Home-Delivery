@@ -6,10 +6,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.asksira.loopingviewpager.LoopingPagerAdapter;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
+import com.example.mffhomedelivery.Common.Common;
+import com.example.mffhomedelivery.Database.CartDataSource;
+import com.example.mffhomedelivery.Database.CartDatabase;
+import com.example.mffhomedelivery.Database.CartItem;
+import com.example.mffhomedelivery.Database.LocalCartDataSource;
+import com.example.mffhomedelivery.EventBus.CounterCartEvent;
 import com.example.mffhomedelivery.R;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -17,30 +28,136 @@ import Model.BestDeals;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
-public class BestDealsAdapter extends LoopingPagerAdapter<BestDeals> {
+public class BestDealsAdapter extends RecyclerView.Adapter<BestDealsAdapter.MyViewHolder> {
+    private Context context;
+    private List<BestDeals> bestDealsList;
+    private CompositeDisposable compositeDisposable;
+    private CartDataSource cartDataSource;
 
-    @BindView(R.id.img_best_deals)
-    ImageView img_best_deal;
+    public BestDealsAdapter(Context context, List<BestDeals> bestDealsList) {
+        this.context = context;
+        this.bestDealsList = bestDealsList;
+        this.compositeDisposable = new CompositeDisposable();
+        this.cartDataSource = new LocalCartDataSource(CartDatabase.getInstance(context).CartDao());
+    }
 
-    @BindView(R.id.txt_best_deals)
-    TextView txt_best_deal;
-
-    Unbinder unbinder;
-
-    public BestDealsAdapter(Context context, List<BestDeals> itemList, boolean isInfinite) {
-        super(context, itemList, isInfinite);
+    @NonNull
+    @Override
+    public BestDealsAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new BestDealsAdapter.MyViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_best_deals_items, parent, false));
     }
 
     @Override
-    protected View inflateView(int viewType, ViewGroup container, int listPosition) {
-        return LayoutInflater.from(context).inflate(R.layout.layout_best_deals_items, container, false);
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        Glide.with(context).load(bestDealsList.get(position).getImage()).into(holder.foodIV);
+        holder.foodPriceTV.setText(new StringBuilder("Rs.").append(bestDealsList.get(position).getPrice()));
+        holder.foodNameTV.setText(new StringBuilder("").append(bestDealsList.get(position).getName()));
+
+        holder.quickCartIV.setOnClickListener(view -> {
+            CartItem cartItem = new CartItem();
+            cartItem.setUid(Common.currentUser.getUid());
+            cartItem.setUserPhone(Common.currentUser.getPhone());
+
+            cartItem.setFoodID(bestDealsList.get(position).getFood_id());
+            cartItem.setFoodName(bestDealsList.get(position).getName());
+            cartItem.setFoodImage(bestDealsList.get(position).getImage());
+            cartItem.setFoodPrice(Double.parseDouble(String.valueOf(bestDealsList.get(position).getPrice())));
+            cartItem.setFoodQuantity(1);
+
+            cartDataSource.getItemInCart(Common.currentUser.getUid(), cartItem.getFoodID())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new SingleObserver<CartItem>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onSuccess(CartItem cartItemFromDB) {
+                            if (cartItemFromDB.equals(cartItem)) {
+                                //Item already in database. So just update it in the cart.
+                                cartItemFromDB.setFoodQuantity(cartItemFromDB.getFoodQuantity() + cartItem.getFoodQuantity());
+
+                                cartDataSource.updateCartItems(cartItemFromDB)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new SingleObserver<Integer>() {
+                                            @Override
+                                            public void onSubscribe(Disposable d) {
+
+                                            }
+
+                                            @Override
+                                            public void onSuccess(Integer integer) {
+                                                Toast.makeText(context, "Cart Updated", Toast.LENGTH_SHORT).show();
+                                                EventBus.getDefault().postSticky(new CounterCartEvent(true));
+                                            }
+
+                                            @Override
+                                            public void onError(Throwable e) {
+                                                Toast.makeText(context, "[UPDATE CART]" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            } else {
+                                //Item not in cart. Insert new.
+                                compositeDisposable.add(cartDataSource.insertOrReplaceAll(cartItem)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(() -> {
+                                            Toast.makeText(context, "Added to Cart", Toast.LENGTH_SHORT).show();
+                                            EventBus.getDefault().postSticky(new CounterCartEvent(true));
+                                        }, throwable -> {
+                                            Toast.makeText(context, "CART ERROR" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }));
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            if (e.getMessage().contains("empty")) {
+                                compositeDisposable.add(cartDataSource.insertOrReplaceAll(cartItem)
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(() -> {
+                                            Toast.makeText(context, "Added to Cart", Toast.LENGTH_SHORT).show();
+                                            EventBus.getDefault().postSticky(new CounterCartEvent(true));
+                                        }, throwable -> {
+                                            Toast.makeText(context, "CART ERROR" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }));
+                            } else
+                                Toast.makeText(context, "[GET CART]" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        });
     }
 
     @Override
-    protected void bindView(View convertView, int listPosition, int viewType) {
-        unbinder = ButterKnife.bind(this, convertView);
-        Glide.with(convertView).load(itemList.get(listPosition).getImage()).into(img_best_deal);
-        txt_best_deal.setText(itemList.get(listPosition).getName());
+    public int getItemCount() {
+        return bestDealsList.size();
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        Unbinder unbinder;
+
+        @BindView(R.id.img_best_deals_food_image)
+        ImageView foodIV;
+        @BindView(R.id.txt_best_deals_food_name)
+        TextView foodNameTV;
+        @BindView(R.id.txt_best_deals_food_price)
+        TextView foodPriceTV;
+        @BindView(R.id.img_best_deals_quick_cart)
+        ImageView quickCartIV;
+
+        public MyViewHolder(@NonNull View itemView) {
+            super(itemView);
+            unbinder = ButterKnife.bind(this, itemView);
+        }
     }
 }

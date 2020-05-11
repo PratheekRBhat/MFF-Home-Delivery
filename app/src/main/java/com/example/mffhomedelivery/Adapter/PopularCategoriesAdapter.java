@@ -10,7 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.mffhomedelivery.Callback.RecyclerClickListener;
+import com.example.mffhomedelivery.EventBus.PopularCategoryClick;
 import com.example.mffhomedelivery.R;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -39,6 +43,9 @@ public class PopularCategoriesAdapter extends RecyclerView.Adapter<PopularCatego
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Glide.with(context).load(popularCategoriesList.get(position).getImage()).into(holder.categoryImg);
         holder.categoryNameTV.setText(popularCategoriesList.get(position).getName());
+
+        holder.setListener((view, pos) ->
+                EventBus.getDefault().postSticky(new PopularCategoryClick(popularCategoriesList.get(pos))));
     }
 
     @Override
@@ -46,7 +53,7 @@ public class PopularCategoriesAdapter extends RecyclerView.Adapter<PopularCatego
         return popularCategoriesList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         Unbinder unbinder;
 
         @BindView(R.id.txt_category_name)
@@ -55,9 +62,21 @@ public class PopularCategoriesAdapter extends RecyclerView.Adapter<PopularCatego
         @BindView(R.id.category_image)
         CircleImageView categoryImg;
 
+        RecyclerClickListener recyclerClickListener;
+
+        public void setListener(RecyclerClickListener recyclerClickListener) {
+            this.recyclerClickListener = recyclerClickListener;
+        }
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             unbinder = ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            recyclerClickListener.onItemClickListener(view, getAdapterPosition());
         }
     }
 }

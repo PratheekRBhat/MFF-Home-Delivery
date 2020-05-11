@@ -3,9 +3,9 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="@style/Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">#c75c41</item>
-        <item name="colorPrimaryDark">#c75c41</item>
-        <item name="colorAccent">#c75c41</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -19,6 +19,12 @@
 
     <style name="ToolbarColoredBackArrow" parent="AppTheme">
         <item name="android:textColorSecondary">@android:color/black</item>
+    </style>
+
+    <style name="ElegantNumberButtonStyle" parent="@style/Theme.MaterialComponents">
+        <item name="colorPrimary">#c75c41</item>
+        <item name="colorPrimaryDark">#c75c41</item>
+        <item name="colorAccent">#c75c41</item>
     </style>
 
 </resources>

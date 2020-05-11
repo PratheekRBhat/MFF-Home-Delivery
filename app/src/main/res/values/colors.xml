@@ -15,4 +15,10 @@
     <color name="mtrl_btn_text_color_disabled" tools:ignore="PrivateResource">#61000000</color>
     <!-- 0% opacity white container fill -->
     <color name="mtrl_btn_transparent_bg_color" tools:ignore="PrivateResource">#00ffffff</color>
+
+    <color name="colorPrimary1">#3F51B5</color>
+    <color name="colorPrimaryDark1">#303F9F</color>
+    <color name="colorAccent1">#FF4081</color>
+    <color name="dialog_header_color">#002b64</color>
+    <color name="dialog_text_color">#464646</color>
 </resources>

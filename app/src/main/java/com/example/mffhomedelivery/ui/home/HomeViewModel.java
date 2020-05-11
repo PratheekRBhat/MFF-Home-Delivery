@@ -19,7 +19,7 @@ import java.util.List;
 import Model.BestDeals;
 import Model.PopularCategories;
 
-        public class HomeViewModel extends ViewModel implements PopularCategoriesCallbackListener, BestDealsCallbackListener {
+public class HomeViewModel extends ViewModel implements PopularCategoriesCallbackListener, BestDealsCallbackListener {
     private MutableLiveData<List<PopularCategories>> popularList;
     private MutableLiveData<List<BestDeals>> bestDealList;
     private MutableLiveData<String> messageError;

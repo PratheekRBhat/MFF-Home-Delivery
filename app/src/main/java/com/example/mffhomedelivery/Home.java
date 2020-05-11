@@ -26,16 +26,23 @@ import com.example.mffhomedelivery.Database.LocalCartDataSource;
 import com.example.mffhomedelivery.EventBus.CategoryClick;
 import com.example.mffhomedelivery.EventBus.CounterCartEvent;
 import com.example.mffhomedelivery.EventBus.HideFABCart;
+import com.example.mffhomedelivery.EventBus.PopularCategoryClick;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import Model.Category;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dmax.dialog.SpotsDialog;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -46,6 +53,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     private AppBarConfiguration mAppBarConfiguration;
     private DrawerLayout drawerLayout;
     private NavController navController;
+
+    android.app.AlertDialog dialog;
 
     @BindView(R.id.fab)
     CounterFab counterFab;
@@ -62,6 +71,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        dialog = new SpotsDialog.Builder().setContext(this).setCancelable(false).build();
 
         ButterKnife.bind(this);
 
@@ -178,6 +189,38 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     public void onCartCounter(CounterCartEvent event) {
         if (event.isSuccess()) {
             countCartItem();
+        }
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onPopularItemClick(PopularCategoryClick event) {
+        if (event.getPopularCategories() != null) {
+            dialog.show();
+
+            FirebaseDatabase.getInstance()
+                    .getReference(Common.CATEGORY_REF)
+                    .child(event.getPopularCategories().getMenu_id())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()){
+                                Common.categorySelected = dataSnapshot.getValue(Category.class);
+
+                                //Load food items.
+                                navController.navigate(R.id.nav_foodList);
+                                dialog.dismiss();
+                            } else {
+                                dialog.dismiss();
+                                Toast.makeText(Home.this, "Item does not exist", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            dialog.dismiss();
+                            Toast.makeText(Home.this, ""+databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
         }
     }
 

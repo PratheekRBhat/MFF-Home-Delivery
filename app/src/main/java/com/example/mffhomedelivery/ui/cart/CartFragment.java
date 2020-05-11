@@ -1,5 +1,6 @@
 package com.example.mffhomedelivery.ui.cart;
 
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -9,6 +10,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +45,7 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -62,6 +66,38 @@ public class CartFragment extends Fragment {
     CardView groupPlaceHolderCV;
     @BindView(R.id.txt_empty_cart)
     TextView emptyCartTV;
+
+    @OnClick(R.id.btn_place_order)
+    void onPlaceOrderClick(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_place_order, null);
+
+        EditText addressET = view.findViewById(R.id.edt_address);
+
+        RadioButton homeAddressRB = view.findViewById(R.id.radio_home_address);
+        RadioButton currentAddressRB = view.findViewById(R.id.radio_current_address);
+
+        //To display the user's home address by default.
+        addressET.setText(Common.currentUser.getAddress());
+
+        //Event.
+        homeAddressRB.setOnCheckedChangeListener((compoundButton, b) -> {
+            if(b) {
+                addressET.setText(Common.currentUser.getAddress());
+            }
+        });
+        currentAddressRB.setOnCheckedChangeListener((compoundButton, b) -> {
+            if(b) {
+                Toast.makeText(getContext(), "Use user location services", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        builder.setView(view);
+        builder.setNegativeButton("No", (dialogInterface, i) -> dialogInterface.dismiss());
+        builder.setPositiveButton("Yes", (dialogInterface, i) -> Toast.makeText(getContext(), "Order placed", Toast.LENGTH_SHORT).show());
+    }
+
 
     private CartViewModel cartViewModel;
 
