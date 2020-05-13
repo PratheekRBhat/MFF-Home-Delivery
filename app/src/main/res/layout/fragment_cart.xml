@@ -57,9 +57,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/place_order"
-                android:background="#c75c41"
+                android:backgroundTint="#c75c41"
                 android:textColor="@android:color/white"
-                android:textSize="24sp"/>
+                android:textSize="24sp"
+                tools:targetApi="lollipop" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

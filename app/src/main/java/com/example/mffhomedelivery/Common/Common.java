@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.Random;
 
 import Model.Category;
 import Model.User;
@@ -21,6 +22,7 @@ public class Common {
 
     public static final int DEFAULT_COLUMN_COUNT = 0;
     public static final int FULL_WIDTH_COLUMN = 1;
+    public static final String ORDER_REF = "Orders";
 
     public static User currentUser;
     public static Category categorySelected;
@@ -45,5 +47,12 @@ public class Common {
         spannableString.setSpan(boldspan, 0, name.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         builder.append(spannableString);
         txt_user.setText(builder, TextView.BufferType.SPANNABLE);
+    }
+
+    public static String createOrderNumber() {
+        return new StringBuilder()
+                .append(System.currentTimeMillis()) //Current time in milliseconds.
+                .append(Math.abs(new Random().nextInt())) //Random number to block same order at same time.
+                .toString();
     }
 }
