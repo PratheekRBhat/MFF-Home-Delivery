@@ -9,6 +9,7 @@ public class Order {
     private double lat, lng, totalPayment, finalPayment;
     private boolean cod;
     private List<CartItem> cartItemList;
+    private long createDate;
 
     public Order() {
     }
@@ -107,5 +108,13 @@ public class Order {
 
     public void setCartItemList(List<CartItem> cartItemList) {
         this.cartItemList = cartItemList;
+    }
+
+    public long getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(long createDate) {
+        this.createDate = createDate;
     }
 }
