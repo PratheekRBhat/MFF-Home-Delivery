@@ -16,7 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mffhomedelivery.Adapter.FoodListAdapter;
 import com.example.mffhomedelivery.Common.Common;
+import com.example.mffhomedelivery.EventBus.MenuItemBack;
 import com.example.mffhomedelivery.R;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,6 +49,12 @@ public class FoodListFragment extends Fragment {
             foodListRV.setLayoutAnimation(layoutAnimationController);
         });
         return root;
+    }
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().postSticky(new MenuItemBack());
+        super.onDestroy();
     }
 
     private void initViews() {

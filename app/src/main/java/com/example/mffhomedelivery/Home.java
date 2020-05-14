@@ -26,6 +26,7 @@ import com.example.mffhomedelivery.Database.LocalCartDataSource;
 import com.example.mffhomedelivery.EventBus.CategoryClick;
 import com.example.mffhomedelivery.EventBus.CounterCartEvent;
 import com.example.mffhomedelivery.EventBus.HideFABCart;
+import com.example.mffhomedelivery.EventBus.MenuItemBack;
 import com.example.mffhomedelivery.EventBus.PopularCategoryClick;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -58,6 +59,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
     @BindView(R.id.fab)
     CounterFab counterFab;
+
+    int menuClickId = -1;
 
     private CartDataSource cartDataSource;
 
@@ -128,18 +131,22 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         switch (item.getItemId()) {
             case R.id.nav_home:
-                navController.navigate(R.id.nav_home);
+                if(item.getItemId() != menuClickId) {
+                    navController.navigate(R.id.nav_home);
+                }
                 break;
             case R.id.nav_menu:
-                navController.navigate(R.id.nav_menu);
+                if(item.getItemId() != menuClickId) {
+                    navController.navigate(R.id.nav_menu);
+                }
                 break;
             case R.id.nav_cart:
-                navController.navigate(R.id.nav_cart);
-                break;
-            case R.id.nav_sign_out:
-                signOut();
-                break;
+                if(item.getItemId() != menuClickId) {
+                    navController.navigate(R.id.nav_cart);
+                }break;
         }
+        menuClickId = item.getItemId();
+
         return true;
     }
 
@@ -250,13 +257,19 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
-    public void onHideFABEvent(HideFABCart event)
-    {
+    public void onHideFABEvent(HideFABCart event) {
         if(event.isHidden())
         {
             counterFab.hide();
         }
         else
             counterFab.show();
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onMenuItemBack(MenuItemBack event) {
+        menuClickId = -1;
+        if(getSupportFragmentManager().getBackStackEntryCount() > 0)
+            getSupportFragmentManager().popBackStack();
     }
 }

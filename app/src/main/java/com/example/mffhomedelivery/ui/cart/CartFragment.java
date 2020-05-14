@@ -39,6 +39,7 @@ import com.example.mffhomedelivery.Database.CartItem;
 import com.example.mffhomedelivery.Database.LocalCartDataSource;
 import com.example.mffhomedelivery.EventBus.CounterCartEvent;
 import com.example.mffhomedelivery.EventBus.HideFABCart;
+import com.example.mffhomedelivery.EventBus.MenuItemBack;
 import com.example.mffhomedelivery.EventBus.UpdateItemInCart;
 import com.example.mffhomedelivery.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -509,6 +510,12 @@ public class CartFragment extends Fragment implements LoadTimeFromFirebaseListen
         super.onResume();
         if (fusedLocationProviderClient != null)
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+    }
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().postSticky(new MenuItemBack());
+        super.onDestroy();
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
