@@ -93,7 +93,7 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_menu, R.id.nav_foodList, R.id.nav_cart)
+                R.id.nav_home, R.id.nav_menu, R.id.nav_foodList, R.id.nav_cart, R.id.nav_view_orders)
                 .setDrawerLayout(drawerLayout)
                 .build();
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
@@ -143,6 +143,10 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
             case R.id.nav_cart:
                 if(item.getItemId() != menuClickId) {
                     navController.navigate(R.id.nav_cart);
+                }break;
+            case R.id.nav_view_orders:
+                if(item.getItemId() != menuClickId) {
+                    navController.navigate(R.id.nav_view_orders);
                 }break;
             case R.id.nav_sign_out:
                 signOut();

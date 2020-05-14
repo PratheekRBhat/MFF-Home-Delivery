@@ -22,24 +22,29 @@
     <string name="menu_home">Home</string>
     <string name="menu_menu">Categories</string>
     <string name="menu_foodList">Food List</string>
+    <string name="menu_cart">Cart</string>
+    <string name="menu_view_orders">My Orders</string>
 
     <string name="home_second">Home Second</string>
     
     <string name="popular_categories">Popular Categories</string>
     <string name="best_deals">Best Deals</string>
-    <string name="menu_cart">Cart</string>
-    <string name="menu_view_orders">View Orders</string>
+
 
     <string name="food_name">Name of the food</string>
     <string name="food_price">Rs. 100</string>
     <string name="desc">Description</string>
+
     <string name="your_name">Enter your name</string>
     <string name="your_address">Enter your address</string>
+
     <string name="empty_cart">EMPTY CART</string>
     <string name="total">Total: 0,0</string>
     <string name="place_order">Place Order</string>
     <string name="action_clear_cart">Clear Cart</string>
+
     <string name="menu_sign_out">Sign Out</string>
+
     <string name="delivery_method">Delivery Method</string>
     <string name="home_address">Home Address</string>
     <string name="current_location">Current Location</string>
@@ -48,5 +53,8 @@
     <string name="cash_on_delivery">Cash On Delivery</string>
     <string name="payment_method">Payment Method</string>
     <string name="enable_location">Please enable location services !</string>
+    <string name="today_at_13_05_pm">Today at 13:05 pm</string>
+    <string name="order_number">Order number:</string>
+    <string name="status_placed">Status: Placed</string>
 
 </resources>

@@ -573,6 +573,7 @@ public class CartFragment extends Fragment implements LoadTimeFromFirebaseListen
     @Override
     public void onLoadTimeSuccess(Order order, long estimateTimeInMs) {
         order.setCreateDate(estimateTimeInMs);
+        order.setOrderStatus(0);
         //Submit the order to Firebase database.
         writeOrderToFirebase(order);
     }

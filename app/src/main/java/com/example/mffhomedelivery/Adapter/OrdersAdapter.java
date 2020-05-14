@@ -1,0 +1,82 @@
+package com.example.mffhomedelivery.Adapter;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.example.mffhomedelivery.Common.Common;
+import com.example.mffhomedelivery.R;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import Model.Order;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
+public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.MyViewHolder> {
+    private Context context;
+    private List<Order> orderList;
+    private Calendar calendar;
+    private SimpleDateFormat simpleDateFormat;
+
+    public OrdersAdapter(Context context, List<Order> orderList) {
+        this.context = context;
+        this.orderList = orderList;
+        calendar =Calendar.getInstance();
+        simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+    }
+
+    @NonNull
+    @Override
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_order_items, parent, false));
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        Glide.with(context).load(orderList.get(position).getCartItemList().get(0).getFoodImage())
+                .into(holder.orderIV); //load default image in cart
+        calendar.setTimeInMillis(orderList.get(position).getCreateDate());
+        Date date = new Date(orderList.get(position).getCreateDate());
+        holder.orderDateTV.setText(new StringBuilder(Common.getDateOfWeek(calendar.get(Calendar.DAY_OF_WEEK)))
+                .append(" ")
+                .append(simpleDateFormat.format(date)));
+        holder.orderNumberTV.setText(new StringBuilder("Order Number: ").append(orderList.get(position).getOrderNumber()));
+        holder.orderStatusTV.setText(new StringBuilder("Status: ").append(Common.convertStatusToText(orderList.get(position).getOrderStatus())));
+    }
+
+    @Override
+    public int getItemCount() {
+        return orderList.size();
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder{
+        @BindView(R.id.txt_order_date)
+        TextView orderDateTV;
+        @BindView(R.id.txt_order_status)
+        TextView orderStatusTV;
+        @BindView(R.id.txt_order_number)
+        TextView orderNumberTV;
+        @BindView(R.id.img_order)
+        ImageView orderIV;
+
+        Unbinder unbinder;
+
+        public MyViewHolder(@NonNull View itemView) {
+            super(itemView);
+            unbinder = ButterKnife.bind(this, itemView);
+
+        }
+    }
+}
