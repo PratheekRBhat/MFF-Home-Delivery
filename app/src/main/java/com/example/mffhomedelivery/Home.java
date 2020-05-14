@@ -144,6 +144,13 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
                 if(item.getItemId() != menuClickId) {
                     navController.navigate(R.id.nav_cart);
                 }break;
+            case R.id.nav_sign_out:
+                signOut();
+                menuClickId = -1;
+                break;
+            default:
+                menuClickId = -1;
+                break;
         }
         menuClickId = item.getItemId();
 
