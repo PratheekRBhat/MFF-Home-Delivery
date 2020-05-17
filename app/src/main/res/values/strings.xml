@@ -34,6 +34,8 @@
     <string name="food_name">Name of the food</string>
     <string name="food_price">Rs. 100</string>
     <string name="desc">Description</string>
+    <string name="food_category">Food Category</string>
+    <string name="vegetarian">Vegetarian</string>
 
     <string name="your_name">Enter your name</string>
     <string name="your_address">Enter your address</string>
@@ -42,6 +44,7 @@
     <string name="total">Total: 0,0</string>
     <string name="place_order">Place Order</string>
     <string name="action_clear_cart">Clear Cart</string>
+    <string name="clear_cart_item"><u>Clear item</u></string>
 
     <string name="menu_sign_out">Sign Out</string>
 
@@ -49,12 +52,14 @@
     <string name="home_address">Home Address</string>
     <string name="current_location">Current Location</string>
     <string name="enter_any_additional_comments">Enter any additional comments</string>
-    <string name="need_billing_address">Implement later with Google API as it needs billing address</string>
     <string name="cash_on_delivery">Cash On Delivery</string>
     <string name="payment_method">Payment Method</string>
     <string name="enable_location">Please enable location services !</string>
+
     <string name="today_at_13_05_pm">Today at 13:05 pm</string>
     <string name="order_number">Order number:</string>
     <string name="status_placed">Status: Placed</string>
+
+
 
 </resources>

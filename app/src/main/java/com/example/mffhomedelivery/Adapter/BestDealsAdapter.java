@@ -56,8 +56,11 @@ public class BestDealsAdapter extends RecyclerView.Adapter<BestDealsAdapter.MyVi
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Glide.with(context).load(bestDealsList.get(position).getImage()).into(holder.foodIV);
-        holder.foodPriceTV.setText(new StringBuilder("Rs.").append(bestDealsList.get(position).getPrice()));
+        holder.foodPriceTV.setText(new StringBuilder("Total: \u20B9").append(bestDealsList.get(position).getPrice()));
         holder.foodNameTV.setText(new StringBuilder("").append(bestDealsList.get(position).getName()));
+        holder.foodCategoryTV.setText(new StringBuilder("").append(bestDealsList.get(position).getMenu_name()));
+        holder.vegetarianTV.setText(R.string.vegetarian);
+
 
         holder.quickCartIV.setOnClickListener(view -> {
             CartItem cartItem = new CartItem();
@@ -154,6 +157,10 @@ public class BestDealsAdapter extends RecyclerView.Adapter<BestDealsAdapter.MyVi
         TextView foodPriceTV;
         @BindView(R.id.img_best_deals_quick_cart)
         ImageView quickCartIV;
+        @BindView(R.id.txt_food_category)
+        TextView foodCategoryTV;
+        @BindView(R.id.vegetarian)
+        TextView vegetarianTV;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);

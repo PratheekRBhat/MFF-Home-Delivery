@@ -1,18 +1,19 @@
 package Model;
 
 public class BestDeals {
-    private String menu_id, food_id, name, image;
+    private String menu_id, food_id, name, image, menu_name;
     private Long price;
 
     public BestDeals() {
     }
 
-    public BestDeals(String menu_id, String food_id, String name, String image, Long price) {
+    public BestDeals(String menu_id, String food_id, String name, String image, String menu_name, Long price) {
         this.menu_id = menu_id;
         this.food_id = food_id;
         this.name = name;
         this.image = image;
         this.price = price;
+        this.menu_name = menu_name;
     }
 
     public String getMenu_id() {
@@ -53,5 +54,13 @@ public class BestDeals {
 
     public void setPrice(Long price) {
         this.price = price;
+    }
+
+    public String getMenu_name() {
+        return menu_name;
+    }
+
+    public void setMenu_name(String menu_name) {
+        this.menu_name = menu_name;
     }
 }

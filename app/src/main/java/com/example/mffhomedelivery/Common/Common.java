@@ -113,13 +113,15 @@ public class Common {
     }
 
     public static void updateToken(Context context, String newToken) {
-        FirebaseDatabase.getInstance()
-                .getReference(Common.TOKEN_REF)
-                .child(Common.currentUser.getUid())
-                .setValue(new TokenModel(Common.currentUser.getPhone(), newToken))
-                .addOnFailureListener(e -> {
-                    Toast.makeText(context, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+        if (Common.currentUser.getUid() != null) {
+            FirebaseDatabase.getInstance()
+                    .getReference(Common.TOKEN_REF)
+                    .child(Common.currentUser.getUid())
+                    .setValue(new TokenModel(Common.currentUser.getPhone(), newToken))
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(context, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        }
     }
 
     public static String getDateOfWeek(int i) {

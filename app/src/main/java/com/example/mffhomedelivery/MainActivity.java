@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<InstanceIdResult> task) {
                         Common.currentUser = currentUser;
+                        String token = task.getResult().getToken();
                         Common.updateToken(MainActivity.this, task.getResult().getToken());
 
                         //Start activity

@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -64,7 +65,9 @@ public class FoodListFragment extends Fragment {
                 .setTitle(Common.categorySelected.getName());
 
         foodListRV.setHasFixedSize(true);
-        foodListRV.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        foodListRV.setLayoutManager(layoutManager);
+        foodListRV.addItemDecoration(new DividerItemDecoration(getContext(), layoutManager.getOrientation()));  //To add dividers between list items.
 
         layoutAnimationController = AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_item_from_left);
     }

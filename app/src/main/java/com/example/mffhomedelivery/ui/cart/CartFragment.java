@@ -1,6 +1,8 @@
 package com.example.mffhomedelivery.ui.cart;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
@@ -23,6 +25,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -47,6 +51,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -90,7 +95,12 @@ public class CartFragment extends Fragment implements LoadTimeFromFirebaseListen
     private FusedLocationProviderClient fusedLocationProviderClient;
     Location currentLocation;
 
+    TextInputLayout addressTIL;
+
     LoadTimeFromFirebaseListener listener;
+
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private boolean locationPermissionGranted = false;
 
     @BindView(R.id.recycler_cart)
     RecyclerView cartRV;
@@ -136,81 +146,91 @@ public class CartFragment extends Fragment implements LoadTimeFromFirebaseListen
     @OnClick(R.id.btn_place_order)
     void onPlaceOrderCLick(){
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Order Details");
 
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_place_order, null);
+        if (locationPermissionGranted) {
+            builder.setTitle("Order Details");
 
-        EditText addressET = view.findViewById(R.id.edt_address);
-        EditText commentET = view.findViewById(R.id.edt_comment);
+            View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_place_order, null);
 
-        TextView addressDetailsTV = view.findViewById(R.id.txt_address_detail);
-        TextView enableLocationTV = view.findViewById(R.id.txt_enable_location);
+            TextInputLayout addressTIL = view.findViewById(R.id.address_txt_ip_lyt);
+            EditText addressET = view.findViewById(R.id.edt_address);
+            EditText commentET = view.findViewById(R.id.edt_comment);
 
-        RadioButton homeRB = view.findViewById(R.id.rdi_home_address);
-        RadioButton currentRB = view.findViewById(R.id.rdi_current_address);
-        RadioButton codRB = view.findViewById(R.id.rdi_cod);
+            TextView addressDetailsTV = view.findViewById(R.id.txt_address_detail);
+            TextView enableLocationTV = view.findViewById(R.id.txt_enable_location);
 
-        //Data
-        addressET.setText(Common.currentUser.getAddress());
+            RadioButton homeRB = view.findViewById(R.id.rdi_home_address);
+            RadioButton currentRB = view.findViewById(R.id.rdi_current_address);
+            RadioButton codRB = view.findViewById(R.id.rdi_cod);
 
-        //Event
-        homeRB.setOnCheckedChangeListener((compoundButton, b) -> {
-            if(b)
-            {
-                addressET.setText(Common.currentUser.getAddress());
-                addressDetailsTV.setVisibility(View.GONE);
-                enableLocationTV.setVisibility(View.GONE);
+            if (!locationPermissionGranted) {
+                Toast.makeText(getContext(), "Please provide location permission to use the app.", Toast.LENGTH_SHORT).show();
+                getLocationPermission();
             }
-        });
-        currentRB.setOnCheckedChangeListener((compoundButton, b) -> {
-            if(b)
-            {
-                fusedLocationProviderClient.getLastLocation()
-                        .addOnSuccessListener(location -> {
-                            if (location != null) {
-                                String coordinates = new StringBuilder()
-                                        .append(location.getLatitude())
-                                        .append(" / ")
-                                        .append(location.getLongitude()).toString();
+            //Data
+            addressET.setText(Common.currentUser.getAddress());
 
-                                Single<String> singleAddress = Single.just(getAddressFromLatLng(location.getLatitude(), location.getLongitude()));
+            //Event
+            homeRB.setOnCheckedChangeListener((compoundButton, b) -> {
+                if(b)
+                {
+                    addressTIL.setVisibility(View.VISIBLE);
+                    addressET.setText(Common.currentUser.getAddress());
+                    addressDetailsTV.setVisibility(View.GONE);
+                    enableLocationTV.setVisibility(View.GONE);
+                }
+            });
+            currentRB.setOnCheckedChangeListener((compoundButton, b) -> {
+                if(b)
+                {
+                    if (locationPermissionGranted) {
+                        fusedLocationProviderClient.getLastLocation()
+                                .addOnSuccessListener(location -> {
+                                    if (location != null) {
+                                        Single<String> singleAddress = Single.just(getAddressFromLatLng(location.getLatitude(), location.getLongitude()));
 
-                                Disposable disposable = singleAddress.subscribeWith(new DisposableSingleObserver<String>() {
-                                    @Override
-                                    public void onSuccess(String s) {
-                                        addressET.setText(coordinates);
-                                        addressDetailsTV.setText(s);
-                                        addressDetailsTV.setVisibility(View.VISIBLE);
-                                        enableLocationTV.setVisibility(View.GONE);
+                                        Disposable disposable = singleAddress.subscribeWith(new DisposableSingleObserver<String>() {
+                                            @Override
+                                            public void onSuccess(String s) {
+                                                addressTIL.setVisibility(View.GONE);
+                                                addressDetailsTV.setText(s);
+                                                addressDetailsTV.setVisibility(View.VISIBLE);
+                                                enableLocationTV.setVisibility(View.GONE);
+                                            }
+
+                                            @Override
+                                            public void onError(Throwable e) {
+                                                addressTIL.setVisibility(View.GONE);
+                                                addressDetailsTV.setVisibility(View.VISIBLE);
+                                                enableLocationTV.setVisibility(View.GONE);
+                                            }
+                                        });
+                                    } else{
+                                        enableLocationTV.setVisibility(View.VISIBLE);
                                     }
-
-                                    @Override
-                                    public void onError(Throwable e) {
-                                        addressET.setText(coordinates);
-                                        addressDetailsTV.setText(R.string.need_billing_address);
-                                        addressDetailsTV.setVisibility(View.VISIBLE);
-                                        enableLocationTV.setVisibility(View.GONE);
-                                    }
+                                })
+                                .addOnFailureListener(e -> {
+                                    Toast.makeText(getContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    addressDetailsTV.setVisibility(View.GONE);
+                                    enableLocationTV.setVisibility(View.GONE);
                                 });
-                            } else{
-                                enableLocationTV.setVisibility(View.VISIBLE);
-                            }
-                        })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(getContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
-                            addressDetailsTV.setVisibility(View.GONE);
-                            enableLocationTV.setVisibility(View.GONE);
-                        });
-            }
-        });
+                    } else {
+                        Toast.makeText(getContext(), "Location permission is not granted !!", Toast.LENGTH_SHORT).show();
+                        homeRB.setChecked(true);
+                    }
+                }
+            });
 
-        builder.setView(view);
-        builder.setNegativeButton("Cancel", (dialogInterface, i) -> {
-            dialogInterface.dismiss();
-        }).setPositiveButton("Proceed", (dialogInterface, i) -> {
-            if (codRB.isChecked())
-                paymentCOD(addressET.getText().toString(), commentET.getText().toString());
-        });
+            builder.setView(view);
+            builder.setNegativeButton("Cancel", (dialogInterface, i) -> {
+                dialogInterface.dismiss();
+            }).setPositiveButton("Proceed", (dialogInterface, i) -> {
+                if (codRB.isChecked())
+                    paymentCOD(addressET.getText().toString(), commentET.getText().toString());
+            });
+        } else {
+            getLocationPermission();
+        }
 
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -314,6 +334,7 @@ public class CartFragment extends Fragment implements LoadTimeFromFirebaseListen
 
                                 @Override
                                 public void onSuccess(Integer integer) {
+                                    EventBus.getDefault().postSticky(new CounterCartEvent(true));
                                     Toast.makeText(getContext(), "Order placed successfully !", Toast.LENGTH_SHORT).show();
                                 }
 
@@ -392,7 +413,7 @@ public class CartFragment extends Fragment implements LoadTimeFromFirebaseListen
             public void instantiateMyButton(RecyclerView.ViewHolder viewHolder, List<MyButton> buf) {
                 buf.add(new MyButton(getContext(), "Delete", 30, 0, Color.parseColor("#FF3C30"),
                         pos -> {
-                            CartItem cartItem = adapter.getItemAtPositon(pos);
+                            CartItem cartItem = adapter.getItemAtPosition(pos);
                             cartDataSource.deleteCartItems(cartItem)
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
@@ -492,6 +513,7 @@ public class CartFragment extends Fragment implements LoadTimeFromFirebaseListen
         super.onStart();
         if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
+        EventBus.getDefault().postSticky(new HideFABCart(true));
     }
 
     @Override
@@ -508,6 +530,7 @@ public class CartFragment extends Fragment implements LoadTimeFromFirebaseListen
     @Override
     public void onResume() {
         super.onResume();
+        EventBus.getDefault().postSticky(new HideFABCart(true));
         if (fusedLocationProviderClient != null)
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
     }
@@ -581,5 +604,26 @@ public class CartFragment extends Fragment implements LoadTimeFromFirebaseListen
     @Override
     public void onLoadTimeFailed(String message) {
         Toast.makeText(getContext(), ""+message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void getLocationPermission() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationPermissionGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_COARSE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {  // If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                locationPermissionGranted = true;
+            }
+        }
     }
 }

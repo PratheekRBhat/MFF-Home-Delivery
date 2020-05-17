@@ -11,6 +11,7 @@ import android.view.animation.LayoutAnimationController;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -75,6 +76,8 @@ public class HomeFragment extends Fragment {
         popularCategoriesRV.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));
 
         bestDealsRV.setHasFixedSize(true);
-        bestDealsRV.setLayoutManager(new LinearLayoutManager(getContext()));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        bestDealsRV.setLayoutManager(layoutManager);
+        bestDealsRV.addItemDecoration(new DividerItemDecoration(getContext(), layoutManager.getOrientation()));
     }
 }

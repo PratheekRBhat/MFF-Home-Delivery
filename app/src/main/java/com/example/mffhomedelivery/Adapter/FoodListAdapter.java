@@ -50,14 +50,16 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.MyView
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_food_item, parent, false));
+        return new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.layout_best_deals_items, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Glide.with(context).load(foodList.get(position).getImage()).into(holder.foodIV);
-        holder.foodPriceTV.setText(new StringBuilder("Rs.").append(foodList.get(position).getPrice()));
+        holder.foodPriceTV.setText(new StringBuilder("Total: \u20B9").append(foodList.get(position).getPrice()));
         holder.foodNameTV.setText(new StringBuilder("").append(foodList.get(position).getName()));
+        holder.foodCategoryTV.setText(new StringBuilder("").append(Common.categorySelected.getName()));
+        holder.vegetarianTV.setText(R.string.vegetarian);
 
         holder.quickCartIV.setOnClickListener(view -> {
             CartItem cartItem = new CartItem();
@@ -146,16 +148,18 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.MyView
     public class MyViewHolder extends RecyclerView.ViewHolder {
         Unbinder unbinder;
 
-        @BindView(R.id.img_food_image)
+        @BindView(R.id.img_best_deals_food_image)
         ImageView foodIV;
-        @BindView(R.id.txt_food_name)
+        @BindView(R.id.txt_best_deals_food_name)
         TextView foodNameTV;
-        @BindView(R.id.txt_food_price)
+        @BindView(R.id.txt_best_deals_food_price)
         TextView foodPriceTV;
-//        @BindView(R.id.img_fav)
-//        ImageView favIV;
-        @BindView(R.id.img_quick_cart)
+        @BindView(R.id.img_best_deals_quick_cart)
         ImageView quickCartIV;
+        @BindView(R.id.txt_food_category)
+        TextView foodCategoryTV;
+        @BindView(R.id.vegetarian)
+        TextView vegetarianTV;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
