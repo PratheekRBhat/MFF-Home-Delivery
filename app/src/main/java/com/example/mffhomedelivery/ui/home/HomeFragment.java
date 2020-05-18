@@ -1,14 +1,20 @@
 package com.example.mffhomedelivery.ui.home;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -33,7 +39,12 @@ public class HomeFragment extends Fragment {
     private Unbinder unbinder;
     @BindView(R.id.recycler_best_deals)
     RecyclerView bestDealsRV;
-    AlertDialog alertDialog;
+    private AlertDialog alertDialog;
+
+    Activity activity = getActivity();
+
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private boolean locationPermissionGranted = false;
 
     LayoutAnimationController layoutAnimationController;
 
@@ -50,7 +61,7 @@ public class HomeFragment extends Fragment {
         //Method to initialise the recycler view.
         initViews();
 
-        homeViewModel.getPopularList().observe(getViewLifecycleOwner(), popularCategories->{
+        homeViewModel.getPopularList().observe(getViewLifecycleOwner(), popularCategories -> {
             alertDialog.dismiss();
             //creating Popular Categories RecyclerView adapter.
             PopularCategoriesAdapter popularCategoriesAdapter = new PopularCategoriesAdapter(getContext(), (List<PopularCategories>) popularCategories);
@@ -58,7 +69,7 @@ public class HomeFragment extends Fragment {
             popularCategoriesRV.setLayoutAnimation(layoutAnimationController);
         });
 
-        homeViewModel.getBestDealList().observe(getViewLifecycleOwner(),bestDeals -> {
+        homeViewModel.getBestDealList().observe(getViewLifecycleOwner(), bestDeals -> {
             //creating Best Deals RecyclerView adapter.
             BestDealsAdapter bestDealsAdapter = new BestDealsAdapter(getContext(), bestDeals);
             bestDealsRV.setAdapter(bestDealsAdapter);
@@ -79,5 +90,29 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         bestDealsRV.setLayoutManager(layoutManager);
         bestDealsRV.addItemDecoration(new DividerItemDecoration(getContext(), layoutManager.getOrientation()));
+
+        if (!locationPermissionGranted) getLocationPermission();
+    }
+
+    private void getLocationPermission() {
+        if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationPermissionGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {  // If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                locationPermissionGranted = true;
+            } else {
+                Toast.makeText(activity, "Please provide permission to use the app", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
