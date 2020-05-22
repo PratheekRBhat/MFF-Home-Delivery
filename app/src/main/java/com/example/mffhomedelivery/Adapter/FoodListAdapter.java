@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -55,89 +56,94 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Glide.with(context).load(foodList.get(position).getImage()).into(holder.foodIV);
-        holder.foodPriceTV.setText(new StringBuilder("Total: \u20B9").append(foodList.get(position).getPrice()));
-        holder.foodNameTV.setText(new StringBuilder("").append(foodList.get(position).getName()));
-        holder.foodCategoryTV.setText(new StringBuilder("").append(Common.categorySelected.getName()));
-        holder.vegetarianTV.setText(R.string.vegetarian);
+        if (foodList.get(position).isAvailable()) {
+            Glide.with(context).load(foodList.get(position).getImage()).into(holder.foodIV);
+            holder.foodPriceTV.setText(new StringBuilder("Total: \u20B9").append(foodList.get(position).getPrice()));
+            holder.foodNameTV.setText(new StringBuilder("").append(foodList.get(position).getName()));
+            holder.foodCategoryTV.setText(new StringBuilder("").append(Common.categorySelected.getName()));
+            holder.vegetarianTV.setText(R.string.vegetarian);
 
-        holder.quickCartIV.setOnClickListener(view -> {
-            CartItem cartItem = new CartItem();
-            cartItem.setUid(Common.currentUser.getUid());
-            cartItem.setUserPhone(Common.currentUser.getPhone());
+            holder.quickCartIV.setOnClickListener(view -> {
+                CartItem cartItem = new CartItem();
+                cartItem.setUid(Common.currentUser.getUid());
+                cartItem.setUserPhone(Common.currentUser.getPhone());
 
-            cartItem.setFoodID(foodList.get(position).getId());
-            cartItem.setFoodName(foodList.get(position).getName());
-            cartItem.setFoodImage(foodList.get(position).getImage());
-            cartItem.setFoodPrice(Double.parseDouble(String.valueOf(foodList.get(position).getPrice())));
-            cartItem.setFoodQuantity(1);
+                cartItem.setFoodID(foodList.get(position).getId());
+                cartItem.setFoodName(foodList.get(position).getName());
+                cartItem.setFoodImage(foodList.get(position).getImage());
+                cartItem.setFoodPrice(Double.parseDouble(String.valueOf(foodList.get(position).getPrice())));
+                cartItem.setFoodQuantity(1);
 
-           cartDataSource.getItemInCart(Common.currentUser.getUid(), cartItem.getFoodID())
-                   .subscribeOn(Schedulers.io())
-                   .observeOn(AndroidSchedulers.mainThread())
-                   .subscribe(new SingleObserver<CartItem>() {
-                       @Override
-                       public void onSubscribe(Disposable d) {
+                cartDataSource.getItemInCart(Common.currentUser.getUid(), cartItem.getFoodID())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new SingleObserver<CartItem>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
 
-                       }
+                            }
 
-                       @Override
-                       public void onSuccess(CartItem cartItemFromDB) {
-                           if (cartItemFromDB.equals(cartItem)) {
-                               //Item already in database. So just update it in the cart.
-                               cartItemFromDB.setFoodQuantity(cartItemFromDB.getFoodQuantity() + cartItem.getFoodQuantity());
+                            @Override
+                            public void onSuccess(CartItem cartItemFromDB) {
+                                if (cartItemFromDB.equals(cartItem)) {
+                                    //Item already in database. So just update it in the cart.
+                                    cartItemFromDB.setFoodQuantity(cartItemFromDB.getFoodQuantity() + cartItem.getFoodQuantity());
 
-                               cartDataSource.updateCartItems(cartItemFromDB)
-                                       .subscribeOn(Schedulers.io())
-                                       .observeOn(AndroidSchedulers.mainThread())
-                                       .subscribe(new SingleObserver<Integer>() {
-                                           @Override
-                                           public void onSubscribe(Disposable d) {
+                                    cartDataSource.updateCartItems(cartItemFromDB)
+                                            .subscribeOn(Schedulers.io())
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .subscribe(new SingleObserver<Integer>() {
+                                                @Override
+                                                public void onSubscribe(Disposable d) {
 
-                                           }
+                                                }
 
-                                           @Override
-                                           public void onSuccess(Integer integer) {
-                                               Toast.makeText(context, "Cart Updated", Toast.LENGTH_SHORT).show();
-                                               EventBus.getDefault().postSticky(new CounterCartEvent(true));
-                                           }
+                                                @Override
+                                                public void onSuccess(Integer integer) {
+                                                    Toast.makeText(context, "Cart Updated", Toast.LENGTH_SHORT).show();
+                                                    EventBus.getDefault().postSticky(new CounterCartEvent(true));
+                                                }
 
-                                           @Override
-                                           public void onError(Throwable e) {
-                                               Toast.makeText(context, "[UPDATE CART]" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                           }
-                                       });
-                           } else {
-                               //Item not in cart. Insert new.
-                               compositeDisposable.add(cartDataSource.insertOrReplaceAll(cartItem)
-                                       .subscribeOn(Schedulers.io())
-                                       .observeOn(AndroidSchedulers.mainThread())
-                                       .subscribe(() -> {
-                                           Toast.makeText(context, "Added to Cart", Toast.LENGTH_SHORT).show();
-                                           EventBus.getDefault().postSticky(new CounterCartEvent(true));
-                                       }, throwable -> {
-                                           Toast.makeText(context, "CART ERROR" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                                       }));
-                           }
-                       }
+                                                @Override
+                                                public void onError(Throwable e) {
+                                                    Toast.makeText(context, "[UPDATE CART]" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                } else {
+                                    //Item not in cart. Insert new.
+                                    compositeDisposable.add(cartDataSource.insertOrReplaceAll(cartItem)
+                                            .subscribeOn(Schedulers.io())
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .subscribe(() -> {
+                                                Toast.makeText(context, "Added to Cart", Toast.LENGTH_SHORT).show();
+                                                EventBus.getDefault().postSticky(new CounterCartEvent(true));
+                                            }, throwable -> {
+                                                Toast.makeText(context, "CART ERROR" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }));
+                                }
+                            }
 
-                       @Override
-                       public void onError(Throwable e) {
-                           if (e.getMessage().contains("empty")) {
-                               compositeDisposable.add(cartDataSource.insertOrReplaceAll(cartItem)
-                                       .subscribeOn(Schedulers.io())
-                                       .observeOn(AndroidSchedulers.mainThread())
-                                       .subscribe(() -> {
-                                           Toast.makeText(context, "Added to Cart", Toast.LENGTH_SHORT).show();
-                                           EventBus.getDefault().postSticky(new CounterCartEvent(true));
-                                       }, throwable -> {
-                                           Toast.makeText(context, "CART ERROR" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                                       }));
-                           } else
-                                Toast.makeText(context, "[GET CART]" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                       }
-                   });
-        });
+                            @Override
+                            public void onError(Throwable e) {
+                                if (e.getMessage().contains("empty")) {
+                                    compositeDisposable.add(cartDataSource.insertOrReplaceAll(cartItem)
+                                            .subscribeOn(Schedulers.io())
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .subscribe(() -> {
+                                                Toast.makeText(context, "Added to Cart", Toast.LENGTH_SHORT).show();
+                                                EventBus.getDefault().postSticky(new CounterCartEvent(true));
+                                            }, throwable -> {
+                                                Toast.makeText(context, "CART ERROR" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }));
+                                } else
+                                    Toast.makeText(context, "[GET CART]" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            });
+        } else {
+           holder.listItemLayout.setVisibility(View.GONE);
+           holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
+        }
     }
 
     @Override
@@ -160,6 +166,8 @@ public class FoodListAdapter extends RecyclerView.Adapter<FoodListAdapter.MyView
         TextView foodCategoryTV;
         @BindView(R.id.vegetarian)
         TextView vegetarianTV;
+        @BindView(R.id.list_item_layout)
+        ConstraintLayout listItemLayout;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);

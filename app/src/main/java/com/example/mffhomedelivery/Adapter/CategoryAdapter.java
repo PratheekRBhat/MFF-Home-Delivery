@@ -57,6 +57,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.MyView
         return categoryList.size();
     }
 
+    public List<Category> getListCategory() {
+        return categoryList;
+    }
+
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         Unbinder unbinder;
         @BindView(R.id.img_category)

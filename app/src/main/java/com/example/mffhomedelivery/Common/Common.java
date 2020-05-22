@@ -27,6 +27,7 @@ import java.text.DecimalFormat;
 import java.util.Random;
 
 import Model.Category;
+import Model.Order;
 import Model.TokenModel;
 import Model.User;
 
@@ -35,13 +36,13 @@ public class Common {
     public static final String POPULAR_CATEGORIES_REF = "MostPopular";
     public static final String BEST_DEALS_REF = "BestDeals";
     public static final String CATEGORY_REF = "Category";
-
-    public static final int DEFAULT_COLUMN_COUNT = 0;
-    public static final int FULL_WIDTH_COLUMN = 1;
     public static final String ORDER_REF = "Orders";
     public static final String NOTI_TITLE = "title";
     public static final String NOTI_CONTENT = "content";
     private static final String TOKEN_REF = "Tokens";
+
+    public static final int DEFAULT_COLUMN_COUNT = 0;
+    public static final int FULL_WIDTH_COLUMN = 1;
 
     public static User currentUser;
     public static Category categorySelected;
@@ -69,11 +70,13 @@ public class Common {
         txt_user.setText(builder, TextView.BufferType.SPANNABLE);
     }
 
-    public static String createOrderNumber() {
-        return new StringBuilder()
+    public static String createOrderNumber(Order orderItem) {
+        String orderNumber =  new StringBuilder()
                 .append(System.currentTimeMillis()) //Current time in milliseconds.
                 .append(Math.abs(new Random().nextInt())) //Random number to block same order at same time.
                 .toString();
+        orderItem.setOrderNumber(orderNumber);
+        return orderNumber;
     }
 
     //Method to show a received notification.

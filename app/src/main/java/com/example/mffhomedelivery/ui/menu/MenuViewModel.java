@@ -36,7 +36,7 @@ public class MenuViewModel extends ViewModel implements CategoryCallbackListener
         return categoryListMutable;
     }
 
-    private void loadCategories() {
+    public void loadCategories() {
         List<Category> tempList = new ArrayList<>();
         DatabaseReference categoryRef = FirebaseDatabase.getInstance().getReference(Common.CATEGORY_REF);
         categoryRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -45,8 +45,8 @@ public class MenuViewModel extends ViewModel implements CategoryCallbackListener
                 for(DataSnapshot itemSnapShot: dataSnapshot.getChildren())
                 {
                     Category category = itemSnapShot.getValue(Category.class);
-                    category.setMenu_id(itemSnapShot.getKey());
-                    tempList.add(itemSnapShot.getValue(Category.class));
+//                    category.setMenu_id(itemSnapShot.getKey());
+                    tempList.add(category);
                 }
                 categoryCallbackListener.onCategoryLoadSuccess(tempList);
             }

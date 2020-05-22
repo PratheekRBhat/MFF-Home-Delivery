@@ -311,7 +311,7 @@ public class CartFragment extends Fragment implements LoadTimeFromFirebaseListen
     private void writeOrderToFirebase(Order order) {
         FirebaseDatabase.getInstance()
                 .getReference(Common.ORDER_REF)
-                .child(Common.createOrderNumber())
+                .child(Common.createOrderNumber(order))
                 .setValue(order)
                 .addOnFailureListener(e -> {
                     Toast.makeText(getContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();

@@ -16,8 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.mffhomedelivery.Common.Common;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,7 +24,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.Arrays;
 import java.util.List;
@@ -80,17 +77,14 @@ public class MainActivity extends AppCompatActivity {
                     Intent homeIntent = new Intent(MainActivity.this, Home.class);
                     startActivity(homeIntent);
                 })
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        Common.currentUser = currentUser;
-                        String token = task.getResult().getToken();
-                        Common.updateToken(MainActivity.this, token);
+                .addOnCompleteListener(task -> {
+                    Common.currentUser = currentUser;
+                    String token = task.getResult().getToken();
+                    Common.updateToken(MainActivity.this, token);
 
-                        //Start activity
-                        Intent homeIntent = new Intent(MainActivity.this, Home.class);
-                        startActivity(homeIntent);
-                    }
+                    //Start activity
+                    Intent homeIntent = new Intent(MainActivity.this, Home.class);
+                    startActivity(homeIntent);
                 });
     }
 
