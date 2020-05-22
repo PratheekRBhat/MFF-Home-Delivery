@@ -164,4 +164,8 @@ public class Common {
                 return "unknown";
         }
     }
+
+    public static String createTopicOrder() {
+        return new StringBuilder("/topics/new_orders").toString();
+    }
 }

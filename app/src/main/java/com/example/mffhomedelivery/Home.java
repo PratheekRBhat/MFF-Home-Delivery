@@ -79,10 +79,11 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         ButterKnife.bind(this);
 
-        cartDataSource = new LocalCartDataSource(CartDatabase.getInstance(this).CartDao());
-
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        cartDataSource = new LocalCartDataSource(CartDatabase.getInstance(this).CartDao());
+
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
             countCartItem();
@@ -109,6 +110,8 @@ public class Home extends AppCompatActivity implements NavigationView.OnNavigati
 
         countCartItem();
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

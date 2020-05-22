@@ -46,6 +46,8 @@ import com.example.mffhomedelivery.EventBus.HideFABCart;
 import com.example.mffhomedelivery.EventBus.MenuItemBack;
 import com.example.mffhomedelivery.EventBus.UpdateItemInCart;
 import com.example.mffhomedelivery.R;
+import com.example.mffhomedelivery.Remote.IFCMService;
+import com.example.mffhomedelivery.Remote.RetrofitFCMClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -65,10 +67,13 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
+import Model.FCMSendData;
 import Model.Order;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -99,6 +104,8 @@ public class CartFragment extends Fragment implements LoadTimeFromFirebaseListen
 
     LoadTimeFromFirebaseListener listener;
 
+    IFCMService ifcmService;
+
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean locationPermissionGranted = false;
 
@@ -116,6 +123,9 @@ public class CartFragment extends Fragment implements LoadTimeFromFirebaseListen
                              @Nullable Bundle savedInstanceState) {
         CartViewModel cartViewModel = ViewModelProviders.of(this).get(CartViewModel.class);
         View root = inflater.inflate(R.layout.fragment_cart, container, false);
+
+        ifcmService = RetrofitFCMClient.getInstance().create(IFCMService.class);
+
         unbinder = ButterKnife.bind(this, root);
 
         listener = this;
@@ -276,7 +286,8 @@ public class CartFragment extends Fragment implements LoadTimeFromFirebaseListen
 
                                 @Override
                                 public void onError(Throwable e) {
-//                                    Toast.makeText(getContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    if(!e.getMessage().contains("Query returned empty result set"))
+                                        Toast.makeText(getContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
 
@@ -328,8 +339,22 @@ public class CartFragment extends Fragment implements LoadTimeFromFirebaseListen
 
                                 @Override
                                 public void onSuccess(Integer integer) {
-                                    EventBus.getDefault().postSticky(new CounterCartEvent(true));
-                                    Toast.makeText(getContext(), "Order placed successfully !", Toast.LENGTH_SHORT).show();
+                                    Map<String, String> notificationData = new HashMap<>();
+                                    notificationData.put(Common.NOTI_TITLE, "New Order");
+                                    notificationData.put(Common.NOTI_CONTENT, "You have a new order from "+Common.currentUser.getPhone());
+
+                                    FCMSendData sendData = new FCMSendData(Common.createTopicOrder(), notificationData);
+
+                                    compositeDisposable.add(ifcmService.sendNotification(sendData)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(fcmResponse -> {
+                                        EventBus.getDefault().postSticky(new CounterCartEvent(true));
+                                        Toast.makeText(getContext(), "Order placed successfully !", Toast.LENGTH_SHORT).show();
+                                    }, throwable -> {
+                                        EventBus.getDefault().postSticky(new CounterCartEvent(true));
+                                        Toast.makeText(getContext(), "Order was sent but failed to send notification !", Toast.LENGTH_SHORT).show();
+                                    }));
                                 }
 
                                 @Override
@@ -455,8 +480,8 @@ public class CartFragment extends Fragment implements LoadTimeFromFirebaseListen
 
                     @Override
                     public void onError(Throwable e) {
-//                        if(!e.getMessage().contains("Query returned empty"))
-//                            Toast.makeText(getContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        if(!e.getMessage().contains("Query returned empty result set"))
+                            Toast.makeText(getContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -581,7 +606,8 @@ public class CartFragment extends Fragment implements LoadTimeFromFirebaseListen
 
                     @Override
                     public void onError(Throwable e) {
-//                        Toast.makeText(getContext(), "[SUM CART]" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        if(!e.getMessage().contains("Query returned empty result set"))
+                            Toast.makeText(getContext(), ""+e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
