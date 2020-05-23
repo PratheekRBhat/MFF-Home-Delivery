@@ -19,11 +19,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:fontFamily="@font/brandon_medium"
         android:text="@string/food_name"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
-        android:textStyle="bold"
+        style="@style/TextStyle"
         app:layout_constraintEnd_toStartOf="@+id/elegantNumberButton"
         app:layout_constraintStart_toEndOf="@+id/img_cart_food_item"
         app:layout_constraintTop_toTopOf="parent" />
@@ -34,10 +31,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:fontFamily="@font/brandon_medium"
         android:text="@string/food_price"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
+        style="@style/TextStyle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toEndOf="@+id/img_cart_food_item"
@@ -55,7 +50,7 @@
         app:initialNumber="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:textColor="@color/colorPrimary"
+        app:textColor="@color/green_primary_dark"
         app:textSize="8sp" />
 
     <TextView
@@ -66,8 +61,7 @@
         android:layout_marginBottom="16dp"
         android:text="@string/clear_cart_item"
         android:textAlignment="center"
-        android:textColor="@color/design_default_color_error"
-        android:textStyle="italic"
+        android:fontFamily="@font/montserrat_italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/elegantNumberButton" />

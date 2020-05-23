@@ -15,8 +15,8 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:titleTextColor="@android:color/black"
             android:background="@android:color/white"
+            app:titleTextColor="@color/green_primary_dark"
             android:theme="@style/ToolbarColoredBackArrow"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
@@ -31,8 +31,10 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         app:backgroundTintMode="src_over"
-        app:backgroundTint="#c75c41"
+        app:backgroundTint="@color/green_accent"
         app:tint = "#ffffff"
-        app:srcCompat="@drawable/ic_shopping_cart_black_24dp" />
+        app:srcCompat="@drawable/ic_shopping_cart_black_24dp"/>
+    <!--        app:backgroundTint="#c75c41"-->
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

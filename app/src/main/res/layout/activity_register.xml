@@ -8,7 +8,8 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        style="@style/TextStyle">
 
         <EditText
             android:id="@+id/txt_reg_name"
@@ -20,7 +21,8 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        style="@style/TextStyle">
 
         <EditText
             android:id="@+id/txt_reg_address"
@@ -32,7 +34,8 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        style="@style/TextStyle">
 
         <EditText
             android:id="@+id/txt_reg_phone"

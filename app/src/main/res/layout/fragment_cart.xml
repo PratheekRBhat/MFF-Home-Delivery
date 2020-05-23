@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/empty_cart"
-        android:fontFamily="@font/brandon_medium"
+        android:fontFamily="@font/montserrat_regular"
         android:layout_centerInParent="true"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -58,10 +58,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/place_order"
-                app:backgroundTint="#c75c41"
                 android:textColor="@android:color/white"
+                app:backgroundTint="@color/green_accent"
                 android:textSize="24sp"
-                android:textAlignment="center"/>
+                android:fontFamily="@font/montserrat_regular"
+                android:textAlignment="center"
+                app:cornerRadius="8dp"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

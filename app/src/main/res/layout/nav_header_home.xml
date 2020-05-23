@@ -16,7 +16,7 @@
         android:id="@+id/txt_user"
         android:textColor="@android:color/white"
         android:textSize="20sp"
-        android:fontFamily="@font/brandon_medium"
+        android:fontFamily="@font/montserrat_medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"

@@ -11,8 +11,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/txt_order_title"
         android:text="Order Detail"
-        android:textSize="32sp"
-        android:fontFamily="@font/brandon_medium"
+        style="@style/HeaderTextStyle"
         android:textColor="@android:color/black"/>
 
     <androidx.recyclerview.widget.RecyclerView

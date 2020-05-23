@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="100dp"
-    android:padding="8dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="8dp"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="4dp">
 
     <ImageView
         android:id="@+id/img_category"
@@ -20,11 +22,11 @@
         android:id="@+id/txt_category"
         android:text="@string/popular_categories"
         android:gravity="center_horizontal|center_vertical"
-        android:fontFamily="@font/brandon_medium"
+        android:fontFamily="@font/montserrat_medium"
         android:textColor="@android:color/white"
         android:textSize="22sp"
         android:layout_gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-</FrameLayout>
+</androidx.cardview.widget.CardView>

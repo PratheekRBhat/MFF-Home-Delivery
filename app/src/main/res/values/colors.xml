@@ -21,6 +21,25 @@
     <color name="colorPrimary1">#3F51B5</color>
     <color name="colorPrimaryDark1">#303F9F</color>
     <color name="colorAccent1">#FF4081</color>
-    <color name="dialog_header_color">#002b64</color>
+
+    <color name="dialog_header_color">#669632</color>
     <color name="dialog_text_color">#464646</color>
+
+    <color name="green_accent">#659631 </color>
+
+    <color name="brown_primary">#B38E57</color>
+    <color name="brown_primary_dark">#997A4B</color>
+
+    <color name="peach_primary">#D9CAB8 </color>
+    <color name="peach_primary_dark">#CCBEAD</color>
+
+    <color name="indigo_primary">#8B62E3</color>
+    <color name="indigo_primary_dark">#573996</color>
+
+    <color name="purple_accent">#893296</color>
+
+    <color name="dark_green_accent">#48574A</color>
+
+    <color name="green_primary">#72D681</color>
+    <color name="green_primary_dark">#2E5734</color>
 </resources>

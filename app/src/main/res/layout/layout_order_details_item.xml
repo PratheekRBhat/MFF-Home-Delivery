@@ -27,8 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="@string/food_name"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
+        style="@style/TextStyle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/order_detail_image"
@@ -40,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/no_of_items"
-        android:textSize="14sp"
+        style="@style/TextStyle"
         app:layout_constraintStart_toEndOf="@+id/order_detail_image"
         app:layout_constraintTop_toBottomOf="@+id/order_detail_item_name" />
 
@@ -52,7 +51,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/food_price"
-        android:textSize="14sp"
+        style="@style/TextStyle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/order_detail_quantity"

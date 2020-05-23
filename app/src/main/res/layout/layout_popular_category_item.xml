@@ -17,8 +17,8 @@
         android:gravity="center_horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/brandon_medium"
-        android:textSize="16sp"
+        android:layout_marginTop="4dp"
+        style="@style/TextStyle"
         />
 
 </LinearLayout>
