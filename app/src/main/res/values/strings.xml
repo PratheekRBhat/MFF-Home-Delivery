@@ -59,6 +59,9 @@
     <string name="today_at_13_05_pm">Today at 13:05 pm</string>
     <string name="order_number">Order number:</string>
     <string name="status_placed">Status: Placed</string>
+    <string name="name_of_the_customer">Name of the customer</string>
+    <string name="no_of_items">Number of items ordered</string>
+
     <string name="action_search">Search</string>
 
 
